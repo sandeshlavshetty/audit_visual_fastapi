@@ -33,7 +33,7 @@ llm = HF_endpoint(model_type)
 audit = Manager()     
 
 
-@app.get("/visualization")
+@app.post("/visualization")
 async def visualize(input: credentials):
     input_dict = input.model_dump()
     summary = audit.summarize(
@@ -73,7 +73,7 @@ async def visualize(input: credentials):
 #         return "chart didnt prepared"
 
         
-@app.get("/query")
+@app.post("/query")
 async def visualize_query(input: credentials):
     input_dict = input.model_dump()
     summary = audit.summarize(
