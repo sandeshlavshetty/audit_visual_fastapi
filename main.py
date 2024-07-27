@@ -1,0 +1,103 @@
+from typing import Union
+from pydantic import BaseModel
+from fastapi import FastAPI
+from manager import Manager
+import os
+from llm_config import HF_endpoint
+import warnings
+from langchain_huggingface import HuggingFaceEndpoint
+from langchain_huggingface import ChatHuggingFace
+from langchain_openai import AzureChatOpenAI
+from typing import Any, Dict, List, Optional, Union
+# from dataclasses import dataclass
+import base64
+from dataclasses import field
+from typing import Any, Dict, List, Optional, Union
+from pydantic.dataclasses import dataclass
+from langchain_core.messages import (
+    HumanMessage,
+    SystemMessage,
+)
+
+app = FastAPI()
+
+class credentials(BaseModel):
+    data_url : str
+    query : str =""
+    n_goals : int | None = None
+    library : str = "seaborn"
+    
+    
+model_type = "azureOAi"
+llm = HF_endpoint(model_type)   
+audit = Manager()     
+
+
+@app.get("/visualization")
+async def visualize(input: credentials):
+    input_dict = input.model_dump()
+    summary = audit.summarize(
+        input.data_url,
+        summary_method="llmt")
+    goals = audit.goals(summary,llm,n=input.n_goals)
+    charts = audit.visualize(
+        summary=summary,
+        goal=goals[0],
+        llm=llm,
+        library=input.library)
+    image_encd = charts[0]
+    input_dict.update({"image_base64_raster": image_encd.raster })
+    input_dict.update({"image_base64_vega": image_encd.spec })
+    return input_dict
+            
+
+
+
+# @app.get("/query")
+# async def visualize_query(input: credentials):
+#     input_dict = input.dict()
+#     summary = audit.summarize(
+#         input.data_url,
+#         summary_method="llmt")
+# #    goals = audit.goals(summary,llm,n=input.n_goals,persona=input.query)
+#     try:
+#         charts = audit.visualize(
+#         summary=summary,
+#         goal=input.query,
+#         llm=llm,
+#         library=input.library)
+#         image_encd = charts[0]
+#         input_dict.update({"image_base64":image_encd.raster })
+#         return input_dict
+#     except:
+#         return "chart didnt prepared"
+
+        
+@app.get("/query")
+async def visualize_query(input: credentials):
+    input_dict = input.model_dump()
+    summary = audit.summarize(
+        input.data_url,
+        summary_method="llmt")
+    try:
+        charts = audit.visualize(
+            summary=summary,
+            goal=input.query,
+            llm=llm,
+            library=input.library)
+        
+        if not charts:
+            return {"error": "No charts were generated"}
+        
+        # Ensure charts[0] exists and has the expected structure
+        if hasattr(charts[0], 'raster'):
+            image_encd = charts[0]
+            input_dict.update({"image_base64_raster": image_encd.raster })
+            input_dict.update({"image_base64_vega": image_encd.spec })
+            return input_dict
+        else:
+            return {"error": "Chart object does not contain 'raster' attribute"}
+    
+    except Exception as e:
+        return {"error": f"Chart preparation failed: {str(e)}"}
+
