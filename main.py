@@ -1,6 +1,7 @@
 from typing import Union
 from pydantic import BaseModel
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from manager import Manager
 import os
 from llm_config import HF_endpoint
@@ -20,6 +21,23 @@ from langchain_core.messages import (
 )
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:5173",
+    " https://bob-hack.vercel.app/",
+    "http://localhost",
+]
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 
 class credentials(BaseModel):
     data_url : str
