@@ -47,7 +47,8 @@ class credentials(BaseModel):
     
     
 model_type = "azureOAi"
-llm = HF_endpoint(model_type)   
+llm = HF_endpoint(model_type)
+llm40= HF_endpoint("azureOAi4o")   
 audit = Manager()     
 
 
@@ -64,11 +65,36 @@ async def visualize(input: credentials):
         llm=llm,
         library=input.library)
     image_encd = charts[0]
+    image_inference = audit.inference(image_encd,llm40)
     input_dict.update({"image_base64_raster": image_encd.raster })
+    input_dict.update({"image_inference": image_inference })
     input_dict.update({"image_base64_vega": image_encd.spec })
     return input_dict
             
-
+@app.post("/multi_visualrecomend")
+async def visualize(input: credentials):
+    input_dict = input.model_dump()
+    summary = audit.summarize(
+        input.data_url,
+        summary_method="llmt")
+    goals = audit.goals(summary,llm,n=input.n_goals)
+    image_list = []
+    inference_list = []
+    for i in range(0,input.n_goals):
+        charts = audit.visualize(
+        summary=summary,
+        goal=goals[i],
+        llm=llm,
+        library=input.library)
+        image_encd = charts[0]
+        image_list.append(image_encd)
+        image_inference = audit.inference(image_encd,llm40)
+        inference_list.append(image_inference)
+        
+    input_dict.update({"image_base64_raster": image_list })
+    input_dict.update({"image_inference": inference_list })
+    input_dict.update({"image_base64_vega": image_encd.spec })
+    return input_dict
 
 
 # @app.get("/query")
@@ -110,7 +136,9 @@ async def visualize_query(input: credentials):
         # Ensure charts[0] exists and has the expected structure
         if hasattr(charts[0], 'raster'):
             image_encd = charts[0]
+            image_inference = audit.inference(image_encd,llm40)
             input_dict.update({"image_base64_raster": image_encd.raster })
+            input_dict.update({"image_inference": image_inference })
             input_dict.update({"image_base64_vega": image_encd.spec })
             return input_dict
         else:
@@ -118,4 +146,9 @@ async def visualize_query(input: credentials):
     
     except Exception as e:
         return {"error": f"Chart preparation failed: {str(e)}"}
+
+
+
+
+
 

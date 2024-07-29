@@ -12,9 +12,22 @@ import tiktoken
 from diskcache import Cache
 import hashlib
 import io
+import requests
+from io import StringIO
+import pandas as pd
 
 def get_dirs(path: str) -> List[str]:
     return next(os.walk(path))[1]
+
+def get_data(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        # print(response.text)
+        data = pd.read_csv(StringIO(response.text))
+        # print(data)
+        return data
+    else:
+        print("get_data error") 
 
 def clean_column_name(col_name: str) -> str:
     """

@@ -4,3 +4,4 @@ from .vizgenerator import *
 from .vizevaluator import *
 from .vizrepairer import *
 from .vizrecommender import *
+from .vizinference import *

@@ -27,6 +27,20 @@ def HF_endpoint(producer):
             # other params...
             )
         return llm
+    elif producer == "azureOAi4o":
+        print("using azure gpt-4o")
+        os.environ["AZURE_OPENAI_API_KEY"] = os.getenv("AZURE_OPENAI_API_KEY")
+        os.environ["AZURE_OPENAI_ENDPOINT"] = os.getenv("AZURE_OPENAI_ENDPOINT")
+        llm = AzureChatOpenAI(
+            azure_deployment="gpt-4o-audit",
+            api_version="2024-05-01-preview",
+            temperature=0,
+            max_tokens=None,
+            timeout=None,
+            max_retries=2,
+            # other params...
+            )
+        return llm    
     else:
         print("Producer parameter missing or some other error at config level")
         

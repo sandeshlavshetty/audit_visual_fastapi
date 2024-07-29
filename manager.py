@@ -1,12 +1,12 @@
 import os
 from typing import List, Union
 import pandas as pd
-from utils import read_dataframe
+from utils import read_dataframe,get_data
 from summarizer import Summarizer
 from goal import GoalExplorer
 from persona import PersonaExplorer
 from executor import ChartExecutor
-from viz import VizGenerator, VizEditor, VizExplainer, VizEvaluator, VizRepairer, VizRecommender
+from viz import VizGenerator, VizEditor, VizExplainer, VizEvaluator, VizRepairer, VizRecommender,  VizInference
 from llm_config import HF_endpoint
 import warnings
 from langchain_huggingface import HuggingFaceEndpoint
@@ -77,7 +77,7 @@ class Manager():
         self.data = None
         self.infographer = None
         self.persona = PersonaExplorer()         
-         
+        self.inference = VizInference()     
          
     def summarize(self,
         data: Union[pd.DataFrame, str],
@@ -86,8 +86,8 @@ class Manager():
         summary_method: str = "default"):
 
         if isinstance(data, str):
-            file_name = data.split("/")[-1]
-            data = read_dataframe(data)
+            # file_name = data.split("/")[-1]
+            data = get_data(data)
             
         self.data = data
         return self.summarizer.summarize(
@@ -176,6 +176,50 @@ class Manager():
         return charts
  
  
+    def visualize_all(
+        self,
+        summary,
+        goal,
+        llm,
+        library="seaborn",
+        return_error: bool = False,
+    ):
+        if isinstance(goal, dict):
+            goal = Goal(**goal)
+        if isinstance(goal, str):
+            goal = Goal(question=goal, visualization=goal, rationale="")
+
+        #self.check_textgen(config=textgen_config)
+        code_specs = self.vizgen.generate(
+            summary=summary, goal=goal, llm=llm,
+            library=library)
+        print("code_specs result:-"+"\n")
+        print(code_specs)
+        vizevalfeed = self.evaluator.generate(
+        code_specs,goal,
+        llm=llm,
+        library=library
+    )    
+        print("viz feedback results"+"\n")
+        print(vizevalfeed)
+        vizreapaircode = self.repairer.generate(
+            code_specs,vizevalfeed,goal,summary=summary,llm=llm,library=library
+        )
+        charts = self.execute(
+            code_specs=vizreapaircode,
+            data=self.data,
+            summary=summary,
+            library=library,
+            return_error=return_error,
+        )
+        return charts
+ 
+
+
+    def inference_gen(self,image_b64,llm):
+        print("manager inference func entered")
+        return self.inference.genrate(image_b64,llm)
+
     def execute(
         self,
         code_specs,
