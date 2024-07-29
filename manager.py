@@ -205,6 +205,7 @@ class Manager():
         vizreapaircode = self.repairer.generate(
             code_specs,vizevalfeed,goal,summary=summary,llm=llm,library=library
         )
+        print("viz repair done")
         charts = self.execute(
             code_specs=vizreapaircode,
             data=self.data,
@@ -212,6 +213,7 @@ class Manager():
             library=library,
             return_error=return_error,
         )
+        print("charts got created")
         return charts
  
 

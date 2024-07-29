@@ -65,7 +65,7 @@ async def visualize(input: credentials):
         llm=llm,
         library=input.library)
     image_encd = charts[0]
-    image_inference = audit.inference_gen(image_encd,llm40)
+    image_inference = audit.inference_gen(image_encd.raster,llm40)
     input_dict.update({"image_base64_raster": image_encd.raster })
     input_dict.update({"image_inference": image_inference })
     input_dict.update({"image_base64_vega": image_encd.spec })
@@ -87,8 +87,8 @@ async def visualize(input: credentials):
         llm=llm,
         library=input.library)
         image_encd = charts[0]
-        image_list.append(image_encd)
-        image_inference = audit.inference_gen(image_encd,llm40)
+        image_list.append(image_encd.raster)
+        image_inference = audit.inference_gen(image_encd.raster,llm40)
         inference_list.append(image_inference)
         
     input_dict.update({"image_base64_raster": image_list })
@@ -129,21 +129,18 @@ async def visualize_query(input: credentials):
             goal=input.query,
             llm=llm,
             library=input.library)
-        
+        print("charts function query completed")
         if not charts:
             return {"error": "No charts were generated"}
-        
+        print(charts[0].raster)
         # Ensure charts[0] exists and has the expected structure
-        if hasattr(charts[0], 'raster'):
-            image_encd = charts[0]
-            image_inference = audit.inference_gen(image_encd,llm40)
-            input_dict.update({"image_base64_raster": image_encd.raster })
-            input_dict.update({"image_inference": image_inference })
-            input_dict.update({"image_base64_vega": image_encd.spec })
-            return input_dict
-        else:
-            return {"error": "Chart object does not contain 'raster' attribute"}
-    
+        image_encd = charts[0]
+        print("inference starting")
+        image_inference = audit.inference_gen(image_encd.raster,llm40)
+        input_dict.update({"image_base64_raster": image_encd.raster })
+        input_dict.update({"image_inference": image_inference })
+        input_dict.update({"image_base64_vega": image_encd.spec })
+        return input_dict
     except Exception as e:
         return {"error": f"Chart preparation failed: {str(e)}"}
 

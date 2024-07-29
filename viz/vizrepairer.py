@@ -68,4 +68,4 @@ class VizRepairer():
 
         response = llm.invoke(messages)
         completions = response.content
-        return [x['content'] for x in completions.text]
+        return [completions]
