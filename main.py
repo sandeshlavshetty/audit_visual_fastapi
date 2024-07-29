@@ -59,7 +59,7 @@ async def visualize(input: credentials):
         input.data_url,
         summary_method="llmt")
     goals = audit.goals(summary,llm,n=input.n_goals)
-    charts = audit.visualize(
+    charts = audit.visualize_all(
         summary=summary,
         goal=goals[0],
         llm=llm,
@@ -81,7 +81,7 @@ async def visualize(input: credentials):
     image_list = []
     inference_list = []
     for i in range(0,input.n_goals):
-        charts = audit.visualize(
+        charts = audit.visualize_all(
         summary=summary,
         goal=goals[i],
         llm=llm,
@@ -124,7 +124,7 @@ async def visualize_query(input: credentials):
         input.data_url,
         summary_method="llmt")
     try:
-        charts = audit.visualize(
+        charts = audit.visualize_all(
             summary=summary,
             goal=input.query,
             llm=llm,
