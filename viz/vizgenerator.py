@@ -60,14 +60,14 @@ class VizGenerator():
 
         response = llm.invoke(messages)
         completions = response.content
-        print(completions)
-        print(type(completions))
+        #print(completions)
+        #print(type(completions))
         #completions = clean_code_snippet(completions)
         #response = [x['content'] for x in completions]
         response = completions
 
         print("vizgenearotr result:-"+"\n")
-        print(response)
+        #print(response)
 
         return [response]
     

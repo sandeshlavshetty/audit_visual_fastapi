@@ -165,7 +165,7 @@ class Manager():
             summary=summary, goal=goal, llm=llm,
             library=library)
         print("code_specs result:-"+"\n")
-        print(code_specs)
+        #print(code_specs)
         charts = self.execute(
             code_specs=code_specs,
             data=self.data,
@@ -194,14 +194,14 @@ class Manager():
             summary=summary, goal=goal, llm=llm,
             library=library)
         print("code_specs result:-"+"\n")
-        print(code_specs)
+        #print(code_specs)
         vizevalfeed = self.evaluator.generate(
         code_specs,goal,
         llm=llm,
         library=library
     )    
         print("viz feedback results"+"\n")
-        print(vizevalfeed)
+        #print(vizevalfeed)
         vizreapaircode = self.repairer.generate(
             code_specs,vizevalfeed,goal,summary=summary,llm=llm,library=library
         )

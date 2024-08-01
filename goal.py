@@ -102,7 +102,7 @@ class GoalExplorer():
         response = llm.invoke(messages)
         result: list[Goal] = response.content
         print("result:-"+"\n")
-        print(result)
+        #print(result)
         try:
             #json_string = clean_code_snippet(result)
             json_string = result

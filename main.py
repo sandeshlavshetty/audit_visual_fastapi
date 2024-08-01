@@ -64,6 +64,8 @@ async def visualize(input: credentials):
         goal=goals[0],
         llm=llm,
         library=input.library)
+    print("charts in api:-")
+    #print(charts[0])
     image_encd = charts[0]
     image_inference = audit.inference_gen(image_encd.raster,llm40)
     input_dict.update({"image_base64_raster": image_encd.raster })
@@ -132,7 +134,7 @@ async def visualize_query(input: credentials):
         print("charts function query completed")
         if not charts:
             return {"error": "No charts were generated"}
-        print(charts[0].raster)
+        #print(charts[0].raster)
         # Ensure charts[0] exists and has the expected structure
         image_encd = charts[0]
         print("inference starting")

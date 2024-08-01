@@ -114,12 +114,12 @@ class Summarizer():
             chat_model = ChatHuggingFace(llm=llm)
             res = chat_model.invoke(messages)
             response = res.content  #call 1 
-            print(response)
+            #print(response)
             enriched_summary = base_summary
             try:
                 #json_string = clean_code_snippet(response.text[0]["content"])
                 json_string = clean_code_snippet(response)
-                print(json_string)
+                #print(json_string)
                 enriched_summary = json.loads(json_string)
             except json.decoder.JSONDecodeError:
                 error_msg = f"The model did not return a valid JSON object while attempting to generate an enriched data summary. Consider using a default summary or  a larger model with higher max token length. | {response.text[0]['content']}"
@@ -139,7 +139,7 @@ class Summarizer():
             print("Enrich function working with azure OAi")
             res = llm.invoke(messages)
             response = res.content  #call 1 
-            print(response)
+            #print(response)
             enriched_summary = base_summary
             try:
                 #json_string = clean_code_snippet(response.text[0]["content"])
@@ -171,7 +171,7 @@ class Summarizer():
             data = read_dataframe(data, encoding=encoding)
         data_properties = self.get_column_properties(data, n_samples)
         print("data properties:-")
-        print(data_properties)
+        #print(data_properties)
         # default single stage summary construction
         base_summary = {
             "name": file_name,

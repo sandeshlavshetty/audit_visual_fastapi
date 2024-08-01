@@ -54,8 +54,8 @@ class VizExplainer():
 
         response = llm.invoke(messages)
         completions = response.content
-        print("completion _ vizexplainer :-"+"\n")
-        print(completions)
+        #print("completion _ vizexplainer :-"+"\n")
+       # print(completions)
         #completions = [clean_code_snippet(x['content']) for x in completions]
         explanations = []
 

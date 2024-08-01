@@ -152,7 +152,7 @@ def get_globals_dict(code_string, data):
     ex_dicts = {"pd": pd, "data": data, "plt": plt}
     globals_dict.update(ex_dicts)
     print("get globals function done:-"+"\n")
-    print(globals_dict)
+    #print(globals_dict)
     return globals_dict
 
 
@@ -233,11 +233,11 @@ class ChartExecutor:
             # Suppress specific warnings
                     ex_locals = get_globals_dict(code, data)
                     print("ex_locals result:-"+"\n")
-                    print(ex_locals)
+                    #print(ex_locals)
                     print(exec(code, ex_locals))
                     chart = ex_locals["chart"]
                     print("chart print:-"+"\n")
-                    print(chart)
+                    #print(chart)
                     if plt:
                         print("entered if plt")
                         buf = io.BytesIO()
