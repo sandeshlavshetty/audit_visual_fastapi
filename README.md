@@ -3,7 +3,7 @@
 ## Model_2
 
 🥈Query Data Visualizer
-  [ Data Visualizer tool ](visual.png)
+ 
   ![visual](https://github.com/sandeshlavshetty/AI_Architects/assets/138968398/f2c59efa-3637-45d2-82b7-5e24cdf4fb96)
 
   Input :- 
